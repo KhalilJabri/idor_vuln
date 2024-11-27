@@ -1,0 +1,49 @@
+<html lang="en">
+<head>
+    <title>Change Password</title>
+</head>
+<body>
+    <form id="changePasswordForm">
+        <input type="hidden" name="user_id" value="{{ id }}" /> <!-- Hidden input for user_id -->
+        <label>username: <input type="text" name="username" /></label><br />
+        <label>Password: <input type="password" name="password" /></label><br />
+        <button type="submit">sign up</button>
+    </form>
+
+    <script>
+        document.getElementById("changePasswordForm").onsubmit = async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(event.target);
+
+            // Get the user_id from the hidden input
+            const userId = formData.get("user_id");
+
+            // Set the form action to include the id in the URL params
+            const urlWithId = `/sign-up`;
+
+            // Convert form data to JSON
+            const formDataObject = Object.fromEntries(formData);
+
+            // Send the POST request with the URL including only the id parameter
+            try {
+                const response = await fetch(urlWithId, {
+                    method: "POST",
+                    body: JSON.stringify(formDataObject),
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("account created successfully!");
+                    window.location.href = "/";  // Redirect to profile page
+                } else {
+                    alert(result.detail);
+                }
+            } catch (error) {
+                console.error("Error submitting form:", error);
+            }
+        };
+    </script>
+</body>
+</html>

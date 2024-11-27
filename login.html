@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <form id="loginForm">
+        <label>Username: <input type="text" name="username" /></label><br />
+        <label>Password: <input type="password" name="password" /></label><br />
+<!--        id= 1010, username= admin                      -->
+        <button type="submit">Login</button>
+        <button><a href="/signup">sign up</a></button>
+    </form>
+
+    <h2>All Users</h2>
+    <ul id="userList">
+        {{ users }}
+    </ul>
+<script>
+        document.getElementById("loginForm").onsubmit = async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",  // Set content type to JSON
+                },
+                body: JSON.stringify(formObject),  // Send the data as a JSON payload
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                console.log("successfuly logoed in!");
+                document.cookie = `user_id=${result.user_id}`;  // Set the user_id cookie
+                window.location.href = "/profile";  // Redirect to profile page
+            } else {
+                alert(result.detail);  // Show the error message from the server
+            }
+        };
+    </script>
+</body>
+</html>
